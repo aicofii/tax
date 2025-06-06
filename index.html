@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>西班牙公司税种信息与预计税收</title>
+  <title>西班牙公司税种信息</title>
   <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.25.6/babel.min.js"></script>
@@ -23,32 +23,16 @@
 
     function App() {
       const [filter, setFilter] = useState("all");
-      const [income, setIncome] = useState(0);
 
       const filteredTaxes = filter === "all" 
         ? taxData 
         : taxData.filter(tax => tax.type.toLowerCase().includes(filter.toLowerCase()));
 
-      const calculateTax = (rate) => {
-        return (income * rate).toFixed(2);
-      };
-
       return (
         <div className="min-h-screen bg-gray-100 p-6">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold text-center mb-6">西班牙公司税种信息与预计税收</h1>
+            <h1 className="text-3xl font-bold text-center mb-6">西班牙公司税种信息</h1>
             
-            <div className="mb-6 bg-white p-4 rounded-lg shadow">
-              <label className="block text-lg font-semibold mb-2">输入公司年收入 (€):</label>
-              <input 
-                type="number" 
-                value={income} 
-                onChange={(e) => setIncome(e.target.value)} 
-                className="w-full p-2 border rounded" 
-                placeholder="请输入收入金额"
-              />
-            </div>
-
             <div className="mb-6 flex justify-center space-x-4">
               <button 
                 onClick={() => setFilter("all")} 
@@ -83,7 +67,6 @@
                     <h2 className="text-xl font-semibold">{tax.name}</h2>
                     <p className="text-gray-600">申报周期: {tax.type}</p>
                     <p className="text-gray-600">税率: {(tax.rate * 100).toFixed(1)}%</p>
-                    <p className="text-gray-600">预计税收: €{income ? calculateTax(tax.rate) : "0.00"}</p>
                     <p className="text-gray-600">描述: {tax.description}</p>
                   </div>
                 ))
