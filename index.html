@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>西班牙公司税种信息</title>
+  <title>西班牙公司税种信息与预计税收</title>
   <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.25.6/babel.min.js"></script>
@@ -15,23 +15,31 @@
     const { useState } = React;
 
     const taxData = [
-      { id: 1, name: "IVA (增值税)", type: "月度/季度", rate: 0.21, description: "适用于大多数商品和服务的标准税率" },
-      { id: 2, name: "IRPF (个人所得税)", type: "年度", rate: 0.30, description: "简化假设30%平均税率" },
-      { id: 3, name: "公司税 (Impuesto sobre Sociedades)", type: "年度", rate: 0.25, description: "适用于公司利润的标准税率" },
-      { id: 4, name: "IAT (地方税)", type: "年度", rate: 0.015, description: "简化假设1.5%平均税率" },
+      { id: 1, name: "IVA (增值税)", type: "月度/季度", rate: 0.21 },
+      { id: 2, name: "IRPF (个人所得税)", type: "年度", rate: 0.30 },
+      { id: 3, name: "公司税 (Impuesto sobre Sociedades)", type: "年度", rate: 0.25 },
+      { id: 4, name: "IAT (地方税)", type: "年度", rate: 0.015 },
     ];
 
     function App() {
       const [filter, setFilter] = useState("all");
+      const fixedIncome = 100000; // 假设固定年收入为100,000欧元
 
       const filteredTaxes = filter === "all" 
         ? taxData 
-        : taxData.filter(tax => tax.type.toLowerCase().includes(filter.toLowerCase()));
+        : taxData.filter(tax => 
+            tax.type.toLowerCase().includes(filter.toLowerCase()) || 
+            (tax.name === "IVA (增值税)" && filter === "年度")
+          );
+
+      const calculateTax = (rate) => {
+        return (fixedIncome * rate).toFixed(2);
+      };
 
       return (
         <div className="min-h-screen bg-gray-100 p-6">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold text-center mb-6">西班牙公司税种信息</h1>
+            <h1 className="text-3xl font-bold text-center mb-6">预计税收</h1>
             
             <div className="mb-6 flex justify-center space-x-4">
               <button 
@@ -66,8 +74,7 @@
                   <div key={tax.id} className="bg-white p-4 rounded-lg shadow">
                     <h2 className="text-xl font-semibold">{tax.name}</h2>
                     <p className="text-gray-600">申报周期: {tax.type}</p>
-                    <p className="text-gray-600">税率: {(tax.rate * 100).toFixed(1)}%</p>
-                    <p className="text-gray-600">描述: {tax.description}</p>
+                    <p className="text-gray-600">预计税收: €{calculateTax(tax.rate)}</p>
                   </div>
                 ))
               ) : (
